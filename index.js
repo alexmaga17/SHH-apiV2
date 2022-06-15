@@ -4,11 +4,11 @@ const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT;	 	
-// const host = process.env.HOST; 	
+const host = process.env.HOST; 	
 
-// const corsOptions = {
-//     origin: "http://localhost:8080"
-// };
+const corsOptions = {
+    origin: "http://localhost:8080"
+};
 
 app.use(cors(corsOptions));
 app.use(express.json());
@@ -27,5 +27,5 @@ app.use('/categories', require('./routes/category.routes.js'))
 app.get('*', function (req, res) {
     res.status(404).json({ message: 'WHAT???' });
 })
-app.listen(port);
-// app.listen(port, host, () => console.log(`App listening at http://${host}:${port}/`));
+// app.listen(port);
+app.listen(port, host, () => console.log(`App listening at http://${host}:${port}/`));

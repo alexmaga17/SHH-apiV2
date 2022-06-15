@@ -130,21 +130,15 @@ exports.delete = async (req, res) => {
 };
 
 exports.createComment = async (req, res) => {
+    const comment = {
+        user:await User.findOne({_id:req.loggedUserId}).select('firstname lastname username photo'),
+        comment:req.body.comment
+    };
     try {
-        const post = await Post.findById(req.params.postID); 
-        if (post === null){
-            return res.status(404).json({
-                success: false, msg: `Cannot find any post with ID ${req.params.postID}.`
-            });
-        }else{
-            const comment = {
-                user:await User.findOne({_id:req.loggedUserId}),
-                comment:req.body.comment
-            };
-            post.comments.push(comment);
-            post.save();
-            console.log(comment);
-        }    
+            const post = await Post.findOneAndUpdate(
+                {_id:req.params.postID},
+                {$push: {comments:comment}}
+            )
         // on success, send the post data
         res.json({ success: true, post: post });
     }
@@ -187,25 +181,22 @@ exports.like = async (req, res) => {
     }
 };
 
-// exports.removeLike = async (req, res) => {
-//     try {
-//         const post = await Post.findById(req.params.postID); 
-//         if (post === null){
-//             return res.status(404).json({
-//                 success: false, msg: `Cannot find any post with ID ${req.params.postID}.`
-//             });
-//         }else{
-//             const like = req.loggedUsername;
-//             post.gamification.likes.push(like);
-//             post.save();
-//             console.log(like);
-//         }    
-//         // on success, send the post data
-//         res.json({ success: true, post: post });
-//     }
-//     catch (err) {
-//         res.status(500).json({
-//             success: false, msg: `Error retrieving post with ID ${req.params.postID}.` 
-//         });
-//     }
-// };
+exports.giveReview = async (req, res) => {
+    const review = {
+        user:await User.findOne({username:req.loggedUsername}).select('username'),
+        stars:req.body.stars
+    };
+    try {
+            const post = await Post.findOneAndUpdate(
+                {_id:req.params.postID},
+                {$push: {"gamification.reviews":review}}
+            )
+        // on success, send the post data
+        res.json({ success: true, post: post });
+    }
+    catch (err) {
+        res.status(500).json({
+            success: false, msg: `Error retrieving post with ID ${req.params.postID}.` 
+        });
+    }
+};
