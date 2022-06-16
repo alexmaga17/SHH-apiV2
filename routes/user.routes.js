@@ -21,6 +21,9 @@ router.route('/:userID')
     .patch(authController.verifyToken,userController.update)
     .delete(authController.verifyToken, userController.delete);    
 
+router.route('/:userID/messages')
+    .put(authController.verifyToken, userController.sendMessage);    
+
 router.all('*', function (req, res) {
     //send an predefined error message 
     res.status(404).json({ message: 'USERS: what???' });

@@ -25,7 +25,7 @@ exports.create = async (req, res) => {
     try {
         if( await User.findOne({email:req.body.email}) || await User.findOne({username:req.body.username}) ){
             return res.status(403).json({success: false, msg: "Utilizador já a ser utilizado"})
-        }else if(req.body.password.length < 8 || req.body.password > 16){
+        }else if(req.body.password.length < 8 || req.body.password.length > 16){
             return res.status(403).json({success: false, msg: "Palavra passe muito curta/comprida"})
         }else if(req.body.number.length != 8){
             return res.status(403).json({success: false, msg: "Número de aluno não suportado!"})
@@ -205,4 +205,66 @@ exports.login = async (req, res) => {
             });
     }
 };
+
+exports.sendMessage = async (req, res) => {
+    const user1 = await User.findById(req.loggedUserId);
+    const user2 = await User.findById(req.params.userID);
+
+    const chat_exists  = user1.chats.some((chat) => chat.user._id.toString() == req.params.userID.toString());
+    console.log(chat_exists);
+
+    try {
+
+        if(chat_exists == true){
+            const senderChat = user1.chats.find((chat) => chat.user._id.toString() == req.params.userID.toString());
+
+            senderChat.messages.push({
+                type:'sent',
+                message:req.body.message,
+                time: new Date()
+            });
+
+
+            const receiverChat = user2.chats.find((chat) => chat.user._id.toString() == req.loggedUserId.toString());
+
+            receiverChat.messages.push({
+                type:'received',
+                message:req.body.message,
+                time: new Date()
+            });
+
+        }else if(chat_exists == false){
+
+            let messageReceive = await User.findOneAndUpdate({_id:req.params.userID},
+                {$push:{ chats: {
+                    user:user1,
+                    messages: {type:'received',
+                        message:req.body.message,
+                        time: new Date()
+                    },
+            }}});
+
+            let messageSend = await User.findOneAndUpdate({_id:req.loggedUserId},
+                {$push:{ chats: {
+                    user:user2,
+                    messages: {type:'sent',
+                        message:req.body.message,
+                        time: new Date()
+                    },
+            }}});
+        }
+
+        await user1.save();
+        await user2.save();
+              
+        // on success, send the post data
+        res.json({ success: true, message: user1.chats });
+    }
+    catch (err) {
+        res.status(500).json({
+            success: false, msg: `Error retrieving user with ID ${req.params.userID}.` 
+        });
+    }
+}
+
 

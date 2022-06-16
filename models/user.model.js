@@ -18,10 +18,10 @@ module.exports = (mongoose) => {
                         message: '{VALUE} is not supported'
                     },
                     default: 'user'},
-                messages:{
-                    username:String,
-                    content:String
-                },
+                chats:[{
+                    user:{},
+                    messages:Array
+                }],
                 degree:{
                     name:String,
                     details:String,
