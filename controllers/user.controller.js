@@ -23,8 +23,16 @@ exports.create = async (req, res) => {
         user_type: req.body.user_type,
     });
     try {
-        await user.save();
-        res.status(201).json({ success: true, msg: "New user created.", URL: `/users/${user._id}` });
+        if( await User.findOne({email:req.body.email}) || await User.findOne({username:req.body.username}) ){
+            return res.status(403).json({success: false, msg: "Utilizador já a ser utilizado"})
+        }else if(req.body.password.length < 8 || req.body.password > 16){
+            return res.status(403).json({success: false, msg: "Palavra passe muito curta/comprida"})
+        }else if(req.body.number.length != 8){
+            return res.status(403).json({success: false, msg: "Número de aluno não suportado!"})
+        }else{
+            await user.save();
+            res.status(201).json({ success: true, msg: "New user created.", URL: `/users/${user._id}` });
+        }
     }
     catch (err) {
         if (err.name === "ValidationError") {
@@ -49,7 +57,6 @@ exports.findAll = async (req, res) => {
         // return res.status(403).json({
         //     success: false, msg: "Requires ADMIN role"
         // });
-
         let users = await User.find({})
         .exec();
         res.status(200).json({success: true, users: users});
