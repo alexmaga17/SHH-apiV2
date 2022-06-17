@@ -4,13 +4,13 @@ const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT;	 	
-const host = process.env.HOST; 	
+//const host = process.env.HOST; 	
 
 // const corsOptions = {
 //     origin: "http://localhost:8080"
 // };
 
-app.use(cors);
+app.use(cors());
 app.use(express.json());
 // root route -- /api/
 app.get('/', function (req, res) {
