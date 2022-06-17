@@ -1,1 +1,1 @@
-# SHH-apiV2
+# API para a Aplicação SomeHelpingHands

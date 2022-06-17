@@ -10,7 +10,7 @@ const host = process.env.HOST;
 //     origin: "http://localhost:8080"
 // };
 
-app.use(cors());
+app.use(cors);
 app.use(express.json());
 // root route -- /api/
 app.get('/', function (req, res) {
@@ -27,5 +27,5 @@ app.use('/categories', require('./routes/category.routes.js'))
 app.get('*', function (req, res) {
     res.status(404).json({ message: 'WHAT???' });
 })
-app.listen(port);
-// app.listen(port, host, () => console.log(`App listening at http://${host}:${port}/`));
+app.listen(port, () => console.log(`App listening on PORT ${port}`));
+//app.listen(port, host, () => console.log(`App listening at http://${host}:${port}/`));
