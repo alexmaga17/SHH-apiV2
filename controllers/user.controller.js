@@ -72,11 +72,6 @@ exports.findAll = async (req, res) => {
 //Encontrar users por ID
 exports.findByID = async (req, res) => {
     try {
-        if(req.loggedUserType != "admin")
-        return res.status(403).json({
-            success: false, msg: "Requires ADMIN role"
-        });
-
         const user = await User.findById(req.params.userID)
             .exec();
         // no data returned means there is no tutorial in DB with that given ID 
@@ -207,6 +202,7 @@ exports.login = async (req, res) => {
 };
 
 exports.sendMessage = async (req, res) => {
+
     const user1 = await User.findById(req.loggedUserId);
     const user2 = await User.findById(req.params.userID);
 
@@ -233,6 +229,9 @@ exports.sendMessage = async (req, res) => {
                 time: new Date()
             });
 
+            await user1.save();
+            await user2.save();
+
         }else if(chat_exists == false){
 
             let messageReceive = await User.findOneAndUpdate({_id:req.params.userID},
@@ -252,13 +251,9 @@ exports.sendMessage = async (req, res) => {
                         time: new Date()
                     },
             }}});
-        }
-
-        await user1.save();
-        await user2.save();
-              
-        // on success, send the post data
-        res.json({ success: true, message: user1.chats });
+        }             
+       // on success, send the post data
+        res.json({ success: true, message: user1 });
     }
     catch (err) {
         res.status(500).json({

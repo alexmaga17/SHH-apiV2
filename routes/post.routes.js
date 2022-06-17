@@ -18,11 +18,14 @@ router.route('/filter/:category')
     .get(postController.findByCategory);    
 
 router.route('/:postID/comments')
-        //.get(postController.findCommentsByPost)  
-        .put(authController.verifyToken, postController.createComment);
+    //.get(postController.findCommentsByPost)  
+    .put(authController.verifyToken, postController.createComment);
 
 router.route('/:postID/likes') 
-        .put(authController.verifyToken, postController.like);        
+    .put(authController.verifyToken, postController.like); 
+        
+router.route('/:postID/reviews') 
+    .put(authController.verifyToken, postController.giveReview);        
    
 router.all('*', function (req, res) {
     //send an predefined error message 

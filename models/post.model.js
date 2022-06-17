@@ -10,7 +10,7 @@ module.exports = (mongoose) => {
                 comments:Array,
                 gamification:{
                     likes:Array,
-                    stars:Number
+                    reviews:Array
                 },
             },
             { timestamps: false }
