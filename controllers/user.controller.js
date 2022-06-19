@@ -1,6 +1,5 @@
-//const jwt = require("jsonwebtoken"); //JWT tokens creation (sign()) 
+const jwt = require("jsonwebtoken"); //JWT tokens creation (sign()) 
 const bcrypt = require("bcryptjs"); //password encryption
-const jwt = require("jsonwebtoken"); 
 
 const config = require("../config/db.config.js");
 const db = require("../models");

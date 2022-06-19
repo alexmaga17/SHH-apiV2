@@ -1,5 +1,4 @@
 require('dotenv').config();
-const jwt = require("jsonwebtoken"); 
 const express = require('express');
 const cors = require('cors');
 
@@ -10,7 +9,7 @@ const port = process.env.PORT;
 // const corsOptions = {
 //     origin: "http://localhost:8080"
 // };
-app.use(jwt());
+
 app.use(cors());
 app.use(express.json());
 // root route -- /api/
